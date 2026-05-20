@@ -62,6 +62,37 @@ This project relies on the **FRED API** for macroeconomic data.
 
 ---
 
+## 🏗️ System Architecture
+
+The project follows a modular, four-layer architecture to ensure clean separation of concerns between data gathering, processing, machine learning, and presentation.
+
+```mermaid
+graph TD
+    subgraph Data Ingestion Layer
+        YF[Yahoo Finance API<br/>USD/INR Prices] --> DL[data_loader.py]
+        FRED[FRED API<br/>Macro Indicators] --> DL
+        CFG[config.py<br/>Keys & Tickers] --> DL
+    end
+
+    subgraph Feature Engineering Layer
+        DL --> FE[feature_engg.py]
+        FE --> TI[Technical Indicators<br/>MA, Volatility]
+        FE --> MI[Macro Alignment<br/>Forward Fills, Scaling]
+    end
+
+    subgraph Modeling & Execution Layer
+        TI & MI --> MT[model_train.py]
+        MT --> XGB[XGBoost Classifier]
+        XGB --> BT[main.py<br/>Financial Backtesting]
+        BT --> Eval[plots.py<br/>Performance Metrics]
+    end
+
+    subgraph Application Layer
+        XGB --> APP[app.py<br/>Streamlit Dashboard]
+        APP --> UI[Real-time UI<br/>Signals & Projections]
+    end
+---
+
 ## 💻 Usage
 
 ### Running the Interactive Dashboard
